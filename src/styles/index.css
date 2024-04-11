@@ -10,3 +10,41 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+body{
+    font-family: "Sulphur Point", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+input { border:none ; width: 100%;}
+ul {
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.Icono {
+float: inline-end;
+}
+
+.Father {
+    width: 500px;
+}
+
+.SonOne {
+    width: 460px;
+    height: 5px;
+    background-color: rgb(179, 173, 173);
+}
+.SonTwo {
+    width: 450px;
+    height: 5px;
+    background-color: rgb(179, 173, 173);
+}
+
+.TODOS {
+    background-color: rgba(207, 17, 17, 0.63) !important;
+    font-size: xxx-large;
+}
+
+li {
+    overflow: hidden;
+}
