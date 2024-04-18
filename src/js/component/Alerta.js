@@ -43,7 +43,7 @@ const App = () => {
   };
 
   return (
-    <div className="container text-center">
+    <div className="container">
       {!confirmacion && (
         <div>
           <h1>Bienvenido. ingresa Ronalse y vuelve a cargar la pagina porque no se como reparar este error y noe no me ayuda. si ya esta creado te mandara a la list </h1>
