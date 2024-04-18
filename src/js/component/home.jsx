@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { saveStatus} from "./Fetch";
 //inclde images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
 
 
+
 //create your first component
-const Home = () => {
+const Home = (props) => {
 	const [ inputValue, setInputValue ] = useState('');
     const [Todos, setTodos] = useState([]);
 	const [selectedTodo, setSelectedTodo] = useState(null); // Nuevo estado para la tarea seleccionada
 
+	const name = props.nombre;
+	const URL = "https://playground.4geeks.com/todo/users/" + name;
+	const UrlPost = "https://playground.4geeks.com/todo/todos/" + name;
 	const handleCheckboxChange = (index) => {
 		if (selectedTodo === null) {
 			setSelectedTodo(index); // Si no hay ninguna tarea seleccionada, se selecciona la actual
@@ -34,7 +37,7 @@ const Home = () => {
 				body: raw,
 				redirect: "follow"
 			};
-			fetch("https://playground.4geeks.com/todo/todos/ronalse", requestOptions)
+			fetch(UrlPost, requestOptions)
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error('Network response was not ok');
@@ -58,7 +61,6 @@ const Home = () => {
     }, [])
 
     const getMisTareas = async () => {
-		const URL = "https://playground.4geeks.com/todo/users/ronalse";
         fetch(URL)
             .then((response) => response.json())
             .then((result) => {
@@ -68,9 +70,9 @@ const Home = () => {
             .catch((error) => console.error(error));
     }
 	const Change = (e) => {setInputValue(e.target.value)}
-
 	return (
 <>
+
 	<div className=" container Father " > 
 		<div className="container bg-light rounded px-0 mt-4">
 			<h1 className="text-center TODOS rounded-top  mb-0 ">Todos</h1>
