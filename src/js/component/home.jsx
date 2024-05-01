@@ -4,24 +4,14 @@ import rigoImage from "../../img/rigo-baby.jpg";
 
 
 
+
 //create your first component
-const Home = (props) => {
+const Home = () => {
 	const [ inputValue, setInputValue ] = useState('');
     const [Todos, setTodos] = useState([]);
-	const [selectedTodo, setSelectedTodo] = useState(null); // Nuevo estado para la tarea seleccionada
 
-	const name = props.nombre;
-	const URL = "https://playground.4geeks.com/todo/users/" + name;
-	const UrlPost = "https://playground.4geeks.com/todo/todos/" + name;
-	const handleCheckboxChange = (index) => {
-		if (selectedTodo === null) {
-			setSelectedTodo(index); // Si no hay ninguna tarea seleccionada, se selecciona la actual
-		} else if (selectedTodo === index) {
-			setSelectedTodo(null); // Si la tarea seleccionada es la misma que se está desmarcando, se deselecciona
-		} else {
-			setSelectedTodo(index); // Si se marca una nueva tarea, se establece como la tarea seleccionada
-		}
-    }
+
+	const UrlPost = "https://playground.4geeks.com/todo/todos/ronalse";
 	
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter' && inputValue.length >= 3) {
@@ -53,23 +43,61 @@ const Home = (props) => {
 				.catch((error) => console.error(error));
 		}
 	}
-
+	const URL = "https://playground.4geeks.com/todo/users/ronalse";
+		const getMisTareas =  () => {
+			fetch(URL)
+				.then(response => {
+					if (response.status >= 200 && response.status <=299) {
+						return response.json();
+					}else if (response.status >=400 && response.status <=499) {
+						PostFetch();
+					}
+					})
+				.then((result) => {
+					console.log(result.todos)
+					setTodos(result.todos)
+				})
+				.catch((error) => console.error(error));
+		}
 	useEffect(() => {
-        getMisTareas();
-
-        console.log("ejecutar")
+		getMisTareas();
     }, [])
 
-    const getMisTareas = async () => {
-        fetch(URL)
-            .then((response) => response.json())
-            .then((result) => {
-                console.log(result.todos)
-                setTodos(result.todos)
-            })
-            .catch((error) => console.error(error));
-    }
-	const Change = (e) => {setInputValue(e.target.value)}
+	const Change = (e) => {setInputValue(e.target.value)};
+
+	const handleChange = (id) => {
+        const updatedTodos = Todos.map((todo) => {
+            if (todo.id === id) {
+                return { ...todo, is_done: !todo.is_done };
+            }
+            return todo;
+        });
+        setTodos(updatedTodos);
+    };
+
+	const handleDelete = (id) =>{
+		fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
+			method: "DELETE"
+			})
+			.then(response => {
+			if (!response.ok) {console.log("error")}
+			return console.log(response);})
+			.then((response) => {console.log(response)
+				setTodos(Todos.filter(todo => todo.id !== id))
+				getMisTareas();})
+			.catch(error => console.error(error));
+	};
+	
+	const PostFetch = () =>{
+			const requestOptions = {
+			method: "POST",
+			redirect: "follow"
+			};
+			fetch("https://playground.4geeks.com/todo/users/ronalse", requestOptions)
+			.then((response) => response.json())
+			.then((result) => console.log(result))
+			.catch((error) => console.error(error));
+				}
 	return (
 <>
 
@@ -86,25 +114,17 @@ const Home = (props) => {
 					/>
 					{Todos.map( (todo, index) => 
 						<li key={index} className="border-top border-bottom p-2 mx-2 ">
-							<span  style={{ textDecoration: selectedTodo === index ? 'line-through' : '' }}>
+							<span style={{ textDecoration: todo.is_done ? 'line-through' : '' }}>		
                                 {todo.label}
                             </span>
 							<i className="fas fa-eraser Icono " 
-								onClick={ async ()=> 
-								{fetch(`https://playground.4geeks.com/todo/todos/${todo.id}`, {
-                                method: "DELETE"
-                                })
-                                .then(response => {
-                                if (!response.ok) {console.log("error")}
-                                return console.log(response);})
-                                .then((response) => {console.log(response)
-									getMisTareas();})
-								.catch(error => console.error(error));
-								}}>
+								onClick={() =>handleDelete(todo.id)}>
 							</i>
 							<input className="form-check-input Icono mx-2" 
 								type="checkbox" 
-								onChange={() => handleCheckboxChange(index)}>
+								checked={todo.is_done}
+								onChange={() => handleChange(todo.id)}
+							>
 							</input>
 							</li>)}
 				</ul>
